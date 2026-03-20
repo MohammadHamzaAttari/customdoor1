@@ -13,6 +13,7 @@
   },
   "dependencies": {
     "@aws-sdk/client-lambda": "^3.993.0",
+    "@aws-sdk/client-ses": "^3.1013.0",
     "@hookform/resolvers": "^5.2.2",
     "@radix-ui/react-accordion": "^1.1.2",
     "@radix-ui/react-dialog": "^1.0.5",

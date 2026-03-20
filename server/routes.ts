@@ -644,6 +644,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     leftAngledRailWidth: z.number().optional(),
     rightAngledRailWidth: z.number().optional(),
     panelOrientation: z.string().optional(),
+    hingeDrilling: z.boolean().optional(),
     hinges: z.array(z.any()),
   }).passthrough();
 
@@ -683,6 +684,44 @@ export async function registerRoutes(app: Express): Promise<Server> {
     material: z.string(),
     finish: z.string(),
   }).passthrough();
+
+
+
+
+
+  app.post("/api/admin/change-password", async (req, res) => {
+    if (!req.isAuthenticated()) return res.sendStatus(401);
+    
+    try {
+      const { currentPassword, newPassword } = req.body;
+      if (!currentPassword || !newPassword) {
+        return res.status(400).send("Both current and new passwords are required");
+      }
+
+      const { db } = await import("./db");
+      const { users } = await import("@shared/schema");
+      const { eq } = await import("drizzle-orm");
+      const bcrypt = await import("bcryptjs");
+
+      const [user] = await db.select().from(users).where(eq(users.id, (req.user as any).id)).limit(1);
+      if (!user) return res.sendStatus(404);
+
+      const isMatch = await bcrypt.compare(currentPassword, user.password);
+      if (!isMatch) {
+        return res.status(400).send("Incorrect current password");
+      }
+
+      const hashedPassword = await bcrypt.hash(newPassword, 10);
+      await db.update(users)
+        .set({ password: hashedPassword })
+        .where(eq(users.id, user.id));
+
+      res.status(200).send("Password updated successfully");
+    } catch (err: any) {
+      console.error("Change password error:", err);
+      res.status(500).send("Error updating password: " + err.message);
+    }
+  });
 
   app.post("/api/export/prepare", async (req, res) => {
     try {

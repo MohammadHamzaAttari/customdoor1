@@ -1,7 +1,8 @@
 import { useAuth } from "@/hooks/use-auth";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { insertUserSchema, InsertUser } from "@shared/schema";
+import { z } from "zod";
+import { loginSchema } from "@shared/schema";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -14,8 +15,8 @@ export default function AdminLogin() {
   const { user, loginMutation } = useAuth();
   const [, setLocation] = useLocation();
 
-  const form = useForm<InsertUser>({
-    resolver: zodResolver(insertUserSchema),
+  const form = useForm<z.infer<typeof loginSchema>>({
+    resolver: zodResolver(loginSchema),
     defaultValues: {
       username: "",
       password: "",
@@ -28,7 +29,7 @@ export default function AdminLogin() {
     }
   }, [user, setLocation]);
 
-  const onSubmit = (data: InsertUser) => {
+  const onSubmit = (data: z.infer<typeof loginSchema>) => {
     loginMutation.mutate(data);
   };
 

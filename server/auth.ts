@@ -5,6 +5,7 @@ import session from "express-session";
 import bcrypt from "bcryptjs";
 import crypto from "crypto";
 import { storage } from "./storage";
+import { sendPasswordResetEmail } from "./email";
 import { User as SelectUser } from "@shared/schema";
 import connectPg from "connect-pg-simple";
 import { pool } from "./db";
@@ -19,7 +20,7 @@ export function setupAuth(app: Express) {
   const PostgresSessionStore = connectPg(session);
   const store = new PostgresSessionStore({
     pool,
-    createTableIfMissing: true,
+    createTableIfMissing: false,
   });
 
   const sessionSettings: session.SessionOptions = {
@@ -135,13 +136,9 @@ export function setupAuth(app: Express) {
         resetTokenExpiry,
       });
 
-      // MOCK EMAIL SENDING
+      // SEND REAL EMAIL via SES
       const resetLink = `${req.protocol}://${req.get("host")}/admin/reset-password?token=${resetToken}`;
-      console.log("=========================================");
-      console.log("PASSWORD RESET REQUEST");
-      console.log(`Email: ${email}`);
-      console.log(`Reset Link: ${resetLink}`);
-      console.log("=========================================");
+      await sendPasswordResetEmail(email, resetLink);
 
       res.status(200).json({ message: "If an account with that email exists, a reset link has been sent." });
     } catch (error: any) {

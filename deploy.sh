@@ -2,6 +2,7 @@
 set -euo pipefail
 source aws-config.sh
 source aws-resources.sh
+source aws-rds-resources.sh
 
 ACTION=${1:-help}
 
@@ -112,13 +113,13 @@ logs-follow)
 
 migrate)
     echo "🗃️ Running migration..."
-    DATABASE_URL=${NEON_DATABASE_URL} npx drizzle-kit push
+    DATABASE_URL=${DATABASE_URL} npx drizzle-kit push
     echo "✅ Done"
     ;;
 
 seed-admin)
     echo "🌱 Seeding admin user..."
-    DATABASE_URL=${NEON_DATABASE_URL} npx tsx seed_admin.ts
+    DATABASE_URL=${DATABASE_URL} npx tsx seed_admin.ts
     echo "✅ Done"
     ;;
 

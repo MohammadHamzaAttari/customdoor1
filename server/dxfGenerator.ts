@@ -31,6 +31,8 @@ export interface DxfDoorConfig {
   midRails?: any[];
   leftAngledRailWidth?: number;
   rightAngledRailWidth?: number;
+  panelOrientation?: string;
+  hingeDrilling?: boolean;
   customerName?: string;
   jobName?: string;
   doorId?: string;
@@ -112,9 +114,10 @@ export async function generateDoorDxf(config: DxfDoorConfig): Promise<string> {
   if (panelType !== "NONE") {
 
     // First, define our panel sections divided by mid-rails
+    const effectivePanelCount = config.midRailsEnabled ? (config.panelCount || 1) : 1;
     const holeSections = getHoleSections(
       mRails, height, bRail, tRail,
-      config.panelCount || 1
+      effectivePanelCount
     );
 
     // Now loop over each section cutout
@@ -179,7 +182,7 @@ export async function generateDoorDxf(config: DxfDoorConfig): Promise<string> {
   }
 
   // ─── C. Hinges ───
-  if (hinges && hinges.length > 0) {
+  if (config.hingeDrilling !== false && hinges && hinges.length > 0) {
     hinges.forEach((h: any) => {
       // Convert from client hinge format to absolute Y from bottom
       let y: number;

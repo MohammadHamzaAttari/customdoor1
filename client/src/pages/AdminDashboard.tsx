@@ -4,7 +4,7 @@ import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Loader2, Settings, Save, AlertCircle, LogOut, Package, PoundSterling, Truck } from 'lucide-react';
+import { Loader2, Settings, Save, AlertCircle, LogOut, Package, PoundSterling, Truck, Lock } from 'lucide-react';
 import { toast } from 'sonner';
 import { useAuth } from '@/hooks/use-auth';
 
@@ -203,9 +203,119 @@ export default function AdminDashboard() {
                 </div>
               </CardContent>
             </Card>
+
+            <Card className="border-stone-200 shadow-sm overflow-hidden bg-white mt-8">
+              <CardHeader className="bg-stone-50/50 border-b border-stone-100 py-4">
+                <CardTitle className="text-sm font-black text-stone-600 uppercase tracking-widest">Security Settings</CardTitle>
+              </CardHeader>
+              <CardContent className="p-6">
+                <ChangePasswordForm />
+              </CardContent>
+            </Card>
           </TabsContent>
         </Tabs>
       </main>
     </div>
+  );
+}
+
+function ChangePasswordForm() {
+  const [currentPassword, setCurrentPassword] = useState('');
+  const [newPassword, setNewPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
+
+  const changePasswordMutation = useMutation({
+    mutationFn: async (data: any) => {
+      const res = await fetch('/api/admin/change-password', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data),
+      });
+      if (!res.ok) {
+        const text = await res.text();
+        throw new Error(text || 'Failed to update password');
+      }
+      return res.text();
+    },
+    onSuccess: () => {
+      toast.success('Password updated successfully');
+      setCurrentPassword('');
+      setNewPassword('');
+      setConfirmPassword('');
+    },
+    onError: (err) => {
+      toast.error(err.message);
+    },
+  });
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (newPassword !== confirmPassword) {
+      return toast.error("New passwords do not match");
+    }
+    if (newPassword.length < 6) {
+      return toast.error("New password must be at least 6 characters");
+    }
+    changePasswordMutation.mutate({ currentPassword, newPassword });
+  };
+
+  return (
+    <form onSubmit={handleSubmit} className="max-w-md space-y-4">
+      <div className="space-y-2">
+        <label className="text-[10px] font-black text-stone-500 uppercase tracking-wider">Current Password</label>
+        <div className="relative">
+          <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-stone-400" />
+          <Input 
+            type="password"
+            className="pl-10 h-11 bg-stone-50 border-stone-200 focus:bg-white transition-all"
+            value={currentPassword}
+            onChange={(e) => setCurrentPassword(e.target.value)}
+            required
+          />
+        </div>
+      </div>
+
+      <div className="grid grid-cols-2 gap-4">
+        <div className="space-y-2">
+          <label className="text-[10px] font-black text-stone-500 uppercase tracking-wider">New Password</label>
+          <div className="relative">
+            <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-stone-400" />
+            <Input 
+              type="password"
+              className="pl-10 h-11 bg-stone-50 border-stone-200 focus:bg-white transition-all"
+              value={newPassword}
+              onChange={(e) => setNewPassword(e.target.value)}
+              required
+            />
+          </div>
+        </div>
+        <div className="space-y-2">
+          <label className="text-[10px] font-black text-stone-500 uppercase tracking-wider">Confirm New Password</label>
+          <div className="relative">
+            <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-stone-400" />
+            <Input 
+              type="password"
+              className="pl-10 h-11 bg-stone-50 border-stone-200 focus:bg-white transition-all"
+              value={confirmPassword}
+              onChange={(e) => setConfirmPassword(e.target.value)}
+              required
+            />
+          </div>
+        </div>
+      </div>
+
+      <Button 
+        type="submit" 
+        className="w-full h-12 text-sm font-bold bg-stone-900 hover:bg-black text-white shadow-xl shadow-stone-200 transition-all active:scale-[0.98]"
+        disabled={changePasswordMutation.isPending}
+      >
+        {changePasswordMutation.isPending ? (
+          <Loader2 className="w-4 h-4 animate-spin mr-2" />
+        ) : (
+          <Save className="w-4 h-4 mr-2" />
+        )}
+        Update Password
+      </Button>
+    </form>
   );
 }

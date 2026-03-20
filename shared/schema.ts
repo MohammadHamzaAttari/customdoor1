@@ -651,6 +651,13 @@ export const insertUserSchema = createInsertSchema(users).pick({
   email: true,
 });
 
+export const loginSchema = z.object({
+  username: z.string().min(1, "Username is required"),
+  password: z.string().min(1, "Password is required"),
+});
+
+export type LoginUser = z.infer<typeof loginSchema>;
+
 export const insertCustomerSchema = createInsertSchema(customers).omit({
   id: true,
   createdAt: true,
