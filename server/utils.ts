@@ -15,51 +15,183 @@ export function intersect(A1: number, B1: number, C1: number, A2: number, B2: nu
     };
 }
 
-/**
- * Generates points for interior profiles (panels, rebates, holes)
- * mirroring the door's angled shape with uniform border widths.
- * Ordering is CCW starting from bottom-left.
- */
-export function getInnerProfilePoints(
-    w: number, h: number,
-    ls: number, rs: number,
-    angL: boolean, angR: boolean,
-    lW: number, lH: number, rW: number, rH: number,
-    arwL: number = 90, arwR: number = 90,
-    yBottom: number, yTop: number
+export interface HoleSection {
+    bottom: number;
+    top: number;
+    isTop: boolean;
+}
+
+export function getHoleSections(
+    midRails: any[],
+    h: number,
+    bottomRail: number,
+    topRail: number,
+    panelCount: number = 1
+): HoleSection[] {
+    const panelBottom = bottomRail;
+    const panelTop = h - topRail;
+    const panelPadding = 15; // 15mm gap between panels if mid-rails are disabled
+
+    if (panelTop <= panelBottom + 0.05) return [];
+
+    if (midRails && midRails.length > 0) {
+        const sorted = midRails
+            .map((r) => {
+                const railBottom = Number(r.positionFromBottom || r.position || 0);
+                const railTop = railBottom + Number(r.dimension || r.height || 100);
+                return { bottom: railBottom, top: railTop };
+            })
+            .filter((r) => r.top > panelBottom && r.bottom < panelTop)
+            .sort((a, b) => a.bottom - b.bottom);
+
+        const sections: HoleSection[] = [];
+        let lastTop = panelBottom;
+
+        for (const rail of sorted) {
+            const effectiveBottom = Math.max(rail.bottom, panelBottom);
+            const effectiveTop = Math.min(rail.top, panelTop);
+            if (effectiveBottom > lastTop + 0.05) {
+                sections.push({ bottom: lastTop, top: effectiveBottom, isTop: false });
+            }
+            lastTop = Math.max(lastTop, effectiveTop);
+        }
+
+        if (lastTop < panelTop - 0.05) {
+            sections.push({ bottom: lastTop, top: panelTop, isTop: true });
+        }
+
+        if (sections.length > 0) {
+            sections.forEach((s) => (s.isTop = false));
+            sections[sections.length - 1].isTop = true;
+        }
+        return sections;
+    }
+
+    const sections: HoleSection[] = [];
+    const totalPanelArea = panelTop - panelBottom;
+    const netPanelArea = totalPanelArea - (panelCount - 1) * panelPadding;
+    const individualPanelHeight = netPanelArea / panelCount;
+
+    for (let i = 0; i < panelCount; i++) {
+        const b = panelBottom + i * (individualPanelHeight + panelPadding);
+        const t = b + individualPanelHeight;
+        sections.push({
+            bottom: b,
+            top: t,
+            isTop: i === panelCount - 1
+        });
+    }
+
+    return sections;
+}
+
+export function createRoofPoints(
+    rightX: number,
+    leftX: number,
+    flatTopY: number,
+    angledInsetL: number,
+    angledInsetR: number,
+    w: number,
+    h: number,
+    angledLeft: boolean,
+    angledRight: boolean,
+    leftCutW: number,
+    leftCutH: number,
+    rightCutW: number,
+    rightCutH: number
 ): Point[] {
-    if (yTop <= yBottom) return [];
-    const ySamples: number[] = [yBottom, yTop];
-    // Calculate elbow points (where stile meets angled rail)
-    if (angL && lW > 0.1 && lH > 0.1) {
-        const mL = lH / lW;
-        const hypL = Math.sqrt(lW * lW + lH * lH);
-        const yElbowL = mL * ls + (h - lH) - arwL * (hypL / lW);
-        if (yElbowL > yBottom && yElbowL < yTop) ySamples.push(yElbowL);
+    const hasL = angledLeft && leftCutH > 0.001 && leftCutW > 0.001;
+    const hasR = angledRight && rightCutH > 0.001 && rightCutW > 0.001;
+
+    const mR = hasR ? -rightCutH / rightCutW : 0;
+    const cR = hasR ? h - mR * w : h;
+    
+    const mL = hasL ? leftCutH / leftCutW : 0;
+    const cL = hasL ? (h - leftCutH) - mL * 0 : h;
+
+    const lHyp = hasL ? Math.sqrt(leftCutW * leftCutW + leftCutH * leftCutH) : 0;
+    const rHyp = hasR ? Math.sqrt(rightCutW * rightCutW + rightCutH * rightCutH) : 0;
+    
+    const lShift = hasL && leftCutW > 0 ? angledInsetL * (lHyp / leftCutW) : 0;
+    const rShift = hasR && rightCutW > 0 ? angledInsetR * (rHyp / rightCutW) : 0;
+
+    let intersectionXR = w; // Default if no angle
+    if (hasR) {
+        intersectionXR = (flatTopY - (cR - rShift)) / mR;
     }
 
-    if (angR && rW > 0.1 && rH > 0.1) {
-        const mR = -rH / rW;
-        const hypR = Math.sqrt(rW * rW + rH * rH);
-        const yElbowR = mR * (rW - rs) + h - arwR * (hypR / rW);
-        if (yElbowR > yBottom && yElbowR < yTop) ySamples.push(yElbowR);
+    let intersectionXL = 0; // Default if no angle
+    if (hasL) {
+        intersectionXL = (flatTopY - (cL - lShift)) / mL;
     }
 
-    // Sort unique samples
-    const sortedYSamples = Array.from(new Set(ySamples)).sort((a, b) => a - b);
+    const getY = (x: number): number => {
+        let y = flatTopY;
+        if (hasR) {
+            y = Math.min(y, mR * x + cR - rShift);
+        }
+        if (hasL) {
+            y = Math.min(y, mL * x + cL - lShift);
+        }
+        return y;
+    };
 
-    const ptsLeft: Point[] = [];
-    const ptsRight: Point[] = [];
+    const samples: number[] = [rightX, leftX];
+    if (hasR && intersectionXR < rightX && intersectionXR > leftX) {
+        samples.push(intersectionXR);
+    }
+    if (hasL && intersectionXL < rightX && intersectionXL > leftX) {
+        samples.push(intersectionXL);
+    }
 
-    sortedYSamples.forEach(y => {
-        // We pass 0 for ts and bs since y bounds are explicitly handled by yBottom and yTop now
-        const { leftInner, rightInner } = getInnerEdgesAtY(y, w, h, ls, rs, 0, 0, arwL, arwR, angL, angR, lW, lH, rW, rH);
-        ptsLeft.push({ x: leftInner, y });
-        ptsRight.push({ x: rightInner, y });
+    return Array.from(new Set(samples))
+        .sort((a, b) => b - a)
+        .map((x) => ({ x, y: Math.max(getY(x), 0) }));
+}
+
+export function getPanelPoints(
+    sec: HoleSection,
+    w: number,
+    h: number,
+    ls: number,
+    rs: number,
+    ts: number,
+    bs: number,
+    arwL: number,
+    arwR: number,
+    angledLeft: boolean,
+    angledRight: boolean,
+    leftCutW: number,
+    leftCutH: number,
+    rightCutW: number,
+    rightCutH: number,
+    inset: number = 0
+): Point[] {
+    const pBottom = sec.bottom + inset;
+    const pTop = sec.top - inset;
+    if (pTop <= pBottom) return [];
+
+    const { leftInner: bL, rightInner: bR } = getInnerEdgesAtY(
+        pBottom, w, h, ls, rs, ts, bs, arwL, arwR, angledLeft, angledRight, 
+        leftCutW, leftCutH, rightCutW, rightCutH, inset
+    );
+
+    if (bL >= bR - 0.001) return [];
+
+    const flatTopY = pTop;
+    const roof = createRoofPoints(bR, bL, flatTopY, arwL + inset, arwR + inset, 
+        w, h, angledLeft, angledRight, leftCutW, leftCutH, rightCutW, rightCutH);
+
+    const points: Point[] = [];
+    points.push({ x: bL, y: pBottom });
+    points.push({ x: bR, y: pBottom });
+    
+    // Roof points (Right to Left)
+    roof.forEach(pt => {
+        points.push({ x: pt.x, y: Math.max(pt.y, pBottom) });
     });
 
-    // CCW order: left edge bottom-to-top, then right edge top-to-bottom
-    return [...ptsLeft, ...ptsRight.reverse()];
+    return points;
 }
 
 /**

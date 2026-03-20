@@ -116,6 +116,12 @@ migrate)
     echo "✅ Done"
     ;;
 
+seed-admin)
+    echo "🌱 Seeding admin user..."
+    DATABASE_URL=${NEON_DATABASE_URL} npx tsx seed_admin.ts
+    echo "✅ Done"
+    ;;
+
 *)
     echo "Usage: ./deploy.sh <command>"
     echo "  all       Deploy client + API"
@@ -125,5 +131,6 @@ migrate)
     echo "  logs      View recent logs"
     echo "  logs-follow  Follow logs live"
     echo "  migrate   Run database migrations"
+    echo "  seed-admin Seed the administrator user"
     ;;
 esac

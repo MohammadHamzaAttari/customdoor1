@@ -609,6 +609,61 @@ export function Door2D({ face = "front", configOverride }: Door2DProps) {
     });
   };
 
+  const renderLiveGeo = () => {
+    if (!angledLeft && !angledRight) return null;
+
+    const flatTopWidth = width
+      - (angledLeft ? leftTriangleCutoutWidth : 0)
+      - (angledRight ? rightTriangleCutoutWidth : 0);
+
+    const flatTopStartX = angledLeft ? leftTriangleCutoutWidth : 0;
+    const flatTopEndX   = angledRight ? (width - rightTriangleCutoutWidth) : width;
+    const flatTopMidX   = (flatTopStartX + flatTopEndX) / 2;
+
+    // SVG y-axis: toY(height) is the TOP of the door (small SVG y).
+    // Go ABOVE the door with negative y offsets.
+    const topEdgeSvgY  = toY(height);
+    const tickTopSvgY  = topEdgeSvgY - 36;   // top of tick / bottom of pill
+    const tickMidSvgY  = topEdgeSvgY - 20;   // horizontal dimension line
+    const pillCenterSvgY = topEdgeSvgY - 54; // pill center
+
+    const sx = toX(flatTopStartX);
+    const ex = toX(flatTopEndX);
+    const mx = toX(flatTopMidX);
+
+    const isTooNarrow = flatTopWidth <= 0;
+    const valueText = isTooNarrow ? "Peak" : `${safeFix(flatTopWidth, 1)}mm`;
+    const subText   = isTooNarrow ? "Pointed" : null;
+    const bgFill    = "#fff7ed";
+    const border    = "#fdba74";
+    const textColor = isTooNarrow ? "#ef4444" : "#9a3412";
+
+    const pw = 76; const ph = subText ? 42 : 32;
+    const px = mx - pw / 2;
+    const py = pillCenterSvgY - ph / 2;
+
+    return (
+      <g>
+        {/* Tick lines — drop from pill down to door top edge */}
+        <line x1={sx} y1={topEdgeSvgY - 2} x2={sx} y2={tickTopSvgY} stroke="#f97316" strokeWidth={0.8} strokeDasharray="3 2" />
+        <line x1={ex} y1={topEdgeSvgY - 2} x2={ex} y2={tickTopSvgY} stroke="#f97316" strokeWidth={0.8} strokeDasharray="3 2" />
+        {/* Horizontal span line */}
+        <line x1={sx} y1={tickMidSvgY} x2={ex} y2={tickMidSvgY} stroke="#f97316" strokeWidth={0.9} />
+        {/* End nubs */}
+        <line x1={sx} y1={tickMidSvgY - 4} x2={sx} y2={tickMidSvgY + 4} stroke="#f97316" strokeWidth={1.5} />
+        <line x1={ex} y1={tickMidSvgY - 4} x2={ex} y2={tickMidSvgY + 4} stroke="#f97316" strokeWidth={1.5} />
+
+        {/* Pill label */}
+        <g transform={`translate(${px}, ${py})`}>
+          <rect width={pw} height={ph} rx={10} fill={bgFill} stroke={border} strokeWidth={1.2} />
+          <text x={pw / 2} y={12} textAnchor="middle" fill="#78716c" fontSize="8" fontWeight="700" letterSpacing="0.6">FLAT TOP</text>
+          <text x={pw / 2} y={26} textAnchor="middle" fill={textColor} fontSize="13" fontWeight="900" fontFamily="Arial, sans-serif">{valueText}</text>
+          {subText && <text x={pw / 2} y={38} textAnchor="middle" fill="#ef4444" fontSize="9" fontWeight="700">{subText}</text>}
+        </g>
+      </g>
+    );
+  };
+
   const renderHingeSideIndicator = () => {
     if (!hingeDrilling || hinges.length === 0) return null;
     const isLeft = hinges[0].side === "LEFT";
@@ -894,6 +949,7 @@ export function Door2D({ face = "front", configOverride }: Door2DProps) {
 
         {renderHinges()}
         {renderDimensions()}
+        {renderLiveGeo()}
         {renderHingeSideIndicator()}
         {renderValidationOverlay()}
 

@@ -5,7 +5,7 @@ async function verifyDxfDetails() {
     console.log("Starting Detailed DXF Verification...");
 
     // 1. Prepare Export with detailed dimensions
-    const prepareUrl = "http://localhost:5000/api/export/prepare?type=dxf";
+    const prepareUrl = "http://127.0.0.1:5000/api/export/prepare?type=dxf";
     const payload = {
         width: 900,
         height: 2100,
@@ -49,7 +49,7 @@ async function verifyDxfDetails() {
         console.log("Token received:", token);
 
         // 2. Download DXF
-        const downloadUrl = `http://localhost:5000/api/download/dxf/${token}`;
+        const downloadUrl = `http://127.0.0.1:5000/api/download/dxf/${token}`;
         const dlRes = await fetch(downloadUrl);
 
         if (!dlRes.ok) {
@@ -61,27 +61,40 @@ async function verifyDxfDetails() {
         console.log(`DXF Downloaded (${dxfText.length} bytes). Checking for detailed entities...`);
 
         // 3. Verify Content
-        // Check for specific labels added in the new implementation
+        // Check for specific labels and metadata
         const checks = [
-            { label: "SECTION A-A (SIDE)", found: dxfText.includes("SECTION A-A (SIDE)") },
-            { label: "SECTION B-B (TOP)", found: dxfText.includes("SECTION B-B (TOP)") },
-            { label: "B.Rail: 220", found: dxfText.includes("B.Rail: 220") },
-            { label: "T.Rail: 110", found: dxfText.includes("T.Rail: 110") },
-            { label: "Stile: 110", found: dxfText.includes("Stile: 110") },
-        ]; // Changed closing bracket to match array end
+            { label: "CUSTOMER:", found: dxfText.includes("CUSTOMER:") },
+            { label: "JOB:", found: dxfText.includes("JOB:") },
+            { label: "ID:", found: dxfText.includes("ID:") },
+        ];
 
-        // Check for CNC Layers
+        checks.forEach(c => {
+            if (c.found) {
+                console.log(`✅ Found Stamp Detail: ${c.label}`);
+            } else {
+                console.error(`❌ Missing Stamp Detail: ${c.label}`);
+            }
+        });
+
+        // Check for clutter (should be GONE)
+        const clutterLabels = ["SECTION A-A", "SIDE VIEW", "TOP VIEW", "Thk:"];
+        clutterLabels.forEach(label => {
+            if (dxfText.includes(label)) {
+                console.error(`❌ Found Clutter Label (should be removed): ${label}`);
+            } else {
+                console.log(`✅ Verified Clutter Removed: ${label}`);
+            }
+        });
+
+        // Check for Standardized CNC Layers
         const expectedLayers = [
-            "T1_DRILL_V4",
-            "T8_DRILL_35MM",
-            "HINGES",
-            "T6_REBATE_12MM",
-            "T6_INNER_ONION",
-            "T4_PROFILE_8MM_OS",
-            "T4_PROFILE_8MM_FINAL",
-            "T3_REBATE_FINISH",
-            "T3_INNER_BREAK",
-            "PANEL_GEOMETRY"
+            "hinge screw holes",
+            "hinge cups",
+            "inner rebate",
+            "inner perimeter cut",
+            "perimeter cut",
+            "panel",
+            "part identification"
         ];
 
         let allLayersFound = true;

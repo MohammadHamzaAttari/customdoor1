@@ -1,5 +1,5 @@
 import { DxfWriter, point3d, point2d, LWPolylineFlags } from "@tarikjabiri/dxf";
-import { getInnerProfilePoints, roundCorners, Point } from "./utils";
+import { roundCorners, Point, getHoleSections, getPanelPoints } from "./utils";
 import { getManufacturingSettings } from "./settings";
 
 export interface DxfDoorConfig {
@@ -49,13 +49,23 @@ export async function generateDoorDxf(config: DxfDoorConfig): Promise<string> {
   const dxf = new DxfWriter();
 
   // --- REQUIRED CNC TOOLING LAYERS ---
-  dxf.addLayer(settings.layers.hingeHoles, 3, "CONTINUOUS");
-  dxf.addLayer(settings.layers.hingeCups, 3, "CONTINUOUS");
-  dxf.addLayer(settings.layers.innerRebate, 1, "CONTINUOUS");
-  dxf.addLayer(settings.layers.innerPerimeter, 1, "CONTINUOUS");
-  dxf.addLayer(settings.layers.perimeter, 5, "CONTINUOUS");
-  dxf.addLayer(settings.layers.panel, 2, "CONTINUOUS");
-  dxf.addLayer(settings.layers.partIdentification, 7, "CONTINUOUS");
+  const layers = settings.layers;
+  dxf.addLayer(layers.hingeHoles || "hinge screw holes", 3, "CONTINUOUS");
+  dxf.addLayer(layers.hingeCups || "hinge cups", 3, "CONTINUOUS");
+  dxf.addLayer(layers.innerRebate || "inner rebate", 1, "CONTINUOUS");
+  dxf.addLayer(layers.innerPerimeter || "inner perimeter cut", 1, "CONTINUOUS");
+  dxf.addLayer(layers.perimeter || "perimeter cut", 5, "CONTINUOUS");
+  dxf.addLayer(layers.panel || "panel", 2, "CONTINUOUS");
+  dxf.addLayer(layers.partIdentification || "part identification", 7, "CONTINUOUS");
+
+  // Local fallback assignments for entity creation
+  const l_perimeter = layers.perimeter || "perimeter cut";
+  const l_innerPerimeter = layers.innerPerimeter || "inner perimeter cut";
+  const l_innerRebate = layers.innerRebate || "inner rebate";
+  const l_panel = layers.panel || "panel";
+  const l_hingeCups = layers.hingeCups || "hinge cups";
+  const l_hingeHoles = layers.hingeHoles || "hinge screw holes";
+  const l_partId = layers.partIdentification || "part identification";
 
   const {
     width,
@@ -96,95 +106,75 @@ export async function generateDoorDxf(config: DxfDoorConfig): Promise<string> {
   // ─── A. Outer Profile ───
   const outerPoints = getProfilePoints(width, height, aL, aR, lcw, lch, rcw, rch);
   const mirroredOuterPoints = mirrorAndReverse(outerPoints, width);
-  dxf.addLWPolyline(mirroredOuterPoints, { flags: LWPolylineFlags.Closed, layerName: settings.layers.perimeter });
+  dxf.addLWPolyline(mirroredOuterPoints, { flags: LWPolylineFlags.Closed, layerName: l_perimeter });
 
   // ─── B. Inner Profile & Panel ───
   if (panelType !== "NONE") {
 
     // First, define our panel sections divided by mid-rails
-    const panelBottom = bRail;
-    const panelTop = height - tRail;
-
-    interface SectionBounds {
-      yBottom: number;
-      yTop: number;
-    }
-
-    const sections: SectionBounds[] = [];
-
-    if (mRails && mRails.length > 0) {
-      const sortedRails = mRails
-        .map((r: any) => {
-          const rB = Number(r.positionFromBottom || r.position || 0);
-          const rH = Number(r.dimension || r.height || 100);
-          return { bottom: rB, top: rB + rH };
-        })
-        .filter(r => r.top > panelBottom && r.bottom < panelTop)
-        .sort((a, b) => a.bottom - b.bottom);
-
-      let lastTop = panelBottom;
-      for (const rail of sortedRails) {
-        const effectiveBottom = Math.max(rail.bottom, panelBottom);
-        const effectiveTop = Math.min(rail.top, panelTop);
-        if (effectiveBottom > lastTop + 0.005) {
-            sections.push({ yBottom: lastTop, yTop: effectiveBottom });
-        }
-        lastTop = Math.max(lastTop, effectiveTop);
-      }
-      if (lastTop < panelTop - 0.005) {
-          sections.push({ yBottom: lastTop, yTop: panelTop });
-      }
-    } else {
-       // Single full panel
-       if (panelTop > panelBottom + 0.005) {
-         sections.push({ yBottom: panelBottom, yTop: panelTop });
-       }
-    }
+    const holeSections = getHoleSections(
+      mRails, height, bRail, tRail,
+      config.panelCount || 1
+    );
 
     // Now loop over each section cutout
-    for (const sec of sections) {
+    for (const sec of holeSections) {
         // Inner Perimeter Cut (Panel Hole)
-        const innerPoints = getInnerProfilePoints(
+        const innerPoints = getPanelPoints(
+          sec,
           width, height,
           lStile, rStile,
+          tRail, bRail,
+          arwL, arwR,
           aL, aR,
           lcw, lch, rcw, rch,
-          arwL, arwR,
-          sec.yBottom, sec.yTop
+          0 // inset
         );
-        const mirroredInnerPoints = mirrorAndReverse(innerPoints, width);
-        dxf.addLWPolyline(mirroredInnerPoints, { flags: LWPolylineFlags.Closed, layerName: settings.layers.innerPerimeter });
+        
+        if (innerPoints.length > 0) {
+          const mirroredInnerPoints = mirrorAndReverse(innerPoints, width);
+          dxf.addLWPolyline(mirroredInnerPoints, { flags: LWPolylineFlags.Closed, layerName: l_innerPerimeter });
+        }
 
         // Inner Rebate
         const rM = config.rebateWidthMm || 10;
-        const rebatePoints = getInnerProfilePoints(
+        const rebatePoints = getPanelPoints(
+          sec,
           width, height,
-          lStile - rM, rStile - rM,
+          lStile, rStile,
+          tRail, bRail,
+          arwL, arwR,
           aL, aR,
           lcw, lch, rcw, rch,
-          arwL - rM, arwR - rM,
-          sec.yBottom - rM, sec.yTop + rM
+          -rM // negative inset means expansion
         );
-        const mirroredRebatePoints = mirrorAndReverse(rebatePoints, width);
-        dxf.addLWPolyline(mirroredRebatePoints, { flags: LWPolylineFlags.Closed, layerName: settings.layers.innerRebate });
+        
+        if (rebatePoints.length > 0) {
+          const mirroredRebatePoints = mirrorAndReverse(rebatePoints, width);
+          dxf.addLWPolyline(mirroredRebatePoints, { flags: LWPolylineFlags.Closed, layerName: l_innerRebate });
+        }
 
         // Panel Geometry
         const panelUndersize = settings.panelOffsetToleranceMm;
-        const panelRadius = 2.4;
+        const panelRadius = settings.panelCornerRadiusMm;
 
-        const pInset = -rM + panelUndersize; // Slightly smaller than rebate by 0.175mm on all sides
-        const rawPanelPoints = getInnerProfilePoints(
+        const pInset = -rM + panelUndersize; // expansion by rM, then contract by undersize
+        const rawPanelPoints = getPanelPoints(
+          sec,
           width, height,
-          lStile + pInset, rStile + pInset,
+          lStile, rStile,
+          tRail, bRail,
+          arwL, arwR,
           aL, aR,
           lcw, lch, rcw, rch,
-          arwL + pInset, arwR + pInset,
-          sec.yBottom + pInset, sec.yTop - pInset
+          pInset
         );
 
-        const roundedPanelPoints = roundCorners(rawPanelPoints, panelRadius);
-        const dxfPanelPoints = mirrorAndReverse(roundedPanelPoints, width);
-        dxf.addLWPolyline(dxfPanelPoints, { flags: LWPolylineFlags.Closed, layerName: settings.layers.panel });
+        if (rawPanelPoints.length > 0) {
+          const roundedPanelPoints = roundCorners(rawPanelPoints, panelRadius);
+          const dxfPanelPoints = mirrorAndReverse(roundedPanelPoints, width);
+          dxf.addLWPolyline(dxfPanelPoints, { flags: LWPolylineFlags.Closed, layerName: l_panel });
+        }
     }
   }
 
@@ -240,15 +230,15 @@ export async function generateDoorDxf(config: DxfDoorConfig): Promise<string> {
       const mirrorX = width - originalX;
 
       // HINGE_CUPS (35mm Cup)
-      dxf.addCircle(point3d(mirrorX, y, 0), 35 / 2, { layerName: settings.layers.hingeCups });
+      dxf.addCircle(point3d(mirrorX, y, 0), 35 / 2, { layerName: l_hingeCups });
 
       // HINGE_SCREW_HOLES
       const screwOffset = 22.5; // 45mm spread
       const hingeType = h.type || h.hingeType || "SCREW_POINTS";
       const drillRadius = hingeType === "INSERTA" ? 4 : 2;
 
-      dxf.addCircle(point3d(mirrorX, y + screwOffset, 0), drillRadius, { layerName: settings.layers.hingeHoles });
-      dxf.addCircle(point3d(mirrorX, y - screwOffset, 0), drillRadius, { layerName: settings.layers.hingeHoles });
+      dxf.addCircle(point3d(mirrorX, y + screwOffset, 0), drillRadius, { layerName: l_hingeHoles });
+      dxf.addCircle(point3d(mirrorX, y - screwOffset, 0), drillRadius, { layerName: l_hingeHoles });
     });
   }
 
@@ -264,15 +254,15 @@ export async function generateDoorDxf(config: DxfDoorConfig): Promise<string> {
     let currentY = centerY + 30; // Start slightly above center
 
     if (customerName) {
-      dxf.addText(point3d(xOffset, currentY, 0), textHeight, `Customer: ${customerName}`, { layerName: settings.layers.partIdentification });
+      dxf.addText(point3d(xOffset, currentY, 0), textHeight, `Customer: ${customerName}`, { layerName: l_partId });
       currentY -= (textHeight + 10);
     }
     if (jobName) {
-      dxf.addText(point3d(xOffset, currentY, 0), textHeight, `Job: ${jobName}`, { layerName: settings.layers.partIdentification });
+      dxf.addText(point3d(xOffset, currentY, 0), textHeight, `Job: ${jobName}`, { layerName: l_partId });
       currentY -= (textHeight + 10);
     }
     if (doorId) {
-      dxf.addText(point3d(xOffset, currentY, 0), textHeight, `Door ID: ${doorId}`, { layerName: settings.layers.partIdentification });
+      dxf.addText(point3d(xOffset, currentY, 0), textHeight, `Door ID: ${doorId}`, { layerName: l_partId });
     }
   }
 

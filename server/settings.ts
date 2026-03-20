@@ -3,6 +3,7 @@ import { DEFAULT_PRICING } from "../shared/doorSchema";
 
 export interface ManufacturingSettings {
   panelOffsetToleranceMm: number;
+  panelCornerRadiusMm: number;
   layers: {
     partIdentification: string;
     hingeHoles: string;
@@ -24,13 +25,14 @@ export async function getManufacturingSettings(): Promise<ManufacturingSettings>
 
   return {
     panelOffsetToleranceMm: parseFloat(getSetting("PANEL_OFFSET_TOLERANCE_MM", "0.175")),
+    panelCornerRadiusMm: parseFloat(getSetting("PANEL_CORNER_RADIUS_MM", "2.4")),
     layers: {
-      partIdentification: getSetting("DXF_LAYER_PART_IDENTIFICATION", "PART_IDENTIFICATION"),
-      hingeHoles: getSetting("DXF_LAYER_HINGE_HOLES", "HINGE_SCREW_HOLES"),
-      hingeCups: getSetting("DXF_LAYER_HINGE_CUPS", "HINGE_CUPS"),
-      innerRebate: getSetting("DXF_LAYER_INNER_REBATE", "INNER_REBATE"),
-      innerPerimeter: getSetting("DXF_LAYER_INNER_PERIMETER", "INNER_PERIMETER_CUT"),
-      perimeter: getSetting("DXF_LAYER_PERIMETER", "PERIMETER_CUT"),
+      partIdentification: getSetting("DXF_LAYER_PART_IDENTIFICATION", "part identification"),
+      hingeHoles: getSetting("DXF_LAYER_HINGE_HOLES", "hinge screw holes"),
+      hingeCups: getSetting("DXF_LAYER_HINGE_CUPS", "hinge cups"),
+      innerRebate: getSetting("DXF_LAYER_INNER_REBATE", "inner rebate"),
+      innerPerimeter: getSetting("DXF_LAYER_INNER_PERIMETER", "inner perimeter cut"),
+      perimeter: getSetting("DXF_LAYER_PERIMETER", "perimeter cut"),
       panel: getSetting("DXF_LAYER_PANEL", "panel"),
     }
   };

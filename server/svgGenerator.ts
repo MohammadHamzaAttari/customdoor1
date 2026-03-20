@@ -1,4 +1,4 @@
-import { getInnerProfilePoints, Point, getInnerEdgesAtY } from "./utils";
+import { Point, getInnerEdgesAtY, getHoleSections, getPanelPoints } from "./utils";
 
 export interface SvgDoorConfig {
   width: number;
@@ -334,50 +334,22 @@ function drawDoorLeaf(
   }
 
   if (panelType !== "NONE" && panelCount > 0) {
-    const sections: Array<{ startY: number; endY: number; isTop: boolean }> = [];
-    const panelPadding = 0; // Match Door2D pPadM = 0
+    const holeSections = getHoleSections(
+      midRailsEnabled ? midRails : [],
+      height, bottomRail, topRail, panelCount
+    );
 
-    if (midRailsEnabled && midRails.length > 0) {
-      const sortedRails = [...midRails].sort((a, b) => a.positionFromBottom - b.positionFromBottom);
-      let lastY = bottomRail;
-      for (const rail of sortedRails) {
-        if (rail.positionFromBottom > lastY) {
-          sections.push({ startY: lastY, endY: rail.positionFromBottom, isTop: false });
-        }
-        lastY = rail.positionFromBottom + rail.dimension;
-      }
-      if (lastY < height - topRail) {
-        sections.push({ startY: lastY, endY: height - topRail, isTop: true });
-      }
-      if (sections.length > 0) sections[sections.length - 1].isTop = true;
-    } else {
-      const panelBottom = bottomRail;
-      const panelTop = height - topRail;
-      const totalPanelArea = panelTop - panelBottom;
-      const netPanelArea = totalPanelArea - (panelCount - 1) * panelPadding;
-      const individualPanelHeight = netPanelArea / panelCount;
-
-      for (let i = 0; i < panelCount; i++) {
-        const b = panelBottom + i * (individualPanelHeight + panelPadding);
-        const t = b + individualPanelHeight;
-        sections.push({ startY: b, endY: t, isTop: i === panelCount - 1 });
-      }
-    }
-
-    for (const [secIdx, section] of sections.entries()) {
-      const currentLS = leftStile + panelPadding;
-      const currentRS = rightStile + panelPadding;
-      const currentTR = height - section.endY + panelPadding;
-      const currentBR = section.startY + panelPadding;
-
-      const panelPts = getInnerProfilePoints(
+    for (const [secIdx, section] of holeSections.entries()) {
+      const panelPts = getPanelPoints(
+        section,
         width, height,
-        currentLS, currentRS, currentTR, currentBR,
+        leftStile, rightStile,
+        topRail, bottomRail,
+        leftAngledRailWidth, rightAngledRailWidth,
         angledLeft, angledRight,
         leftCutW, leftCutH,
         rightCutW, rightCutH,
-        leftAngledRailWidth,
-        rightAngledRailWidth
+        0 // inset
       );
 
       // Need at least 3 points to form a polygon
@@ -388,30 +360,34 @@ function drawDoorLeaf(
         // Reeded lines
         if (panelType === "REEDED_19MM") {
           const reedSpacing = 12;
+          const currentLS = leftStile;
+          const currentRS = rightStile;
           const pW = width - currentLS - currentRS;
           const count = Math.max(2, Math.round(pW / reedSpacing));
           const step = pW / count;
-          const clipId = `reed-clip-${xOffset}-${section.startY}-${secIdx}-${Date.now()}`;
+          const clipId = `reed-clip-${xOffset}-${section.bottom}-${secIdx}-${Date.now()}`;
 
           svg += `  <defs><clipPath id="${clipId}"><path d="${pathD}" /></clipPath></defs>\n`;
           svg += `  <g clip-path="url(#${clipId})">\n`;
           for (let r = 0; r <= count; r++) {
             const rx = toX(currentLS + r * step);
-            svg += `    <line x1="${rx}" y1="${transformY(section.startY)}" x2="${rx}" y2="${transformY(section.endY)}" stroke="#a8a29e" stroke-width="${0.5 * scale}" opacity="0.6" />\n`;
+            svg += `    <line x1="${rx}" y1="${transformY(section.bottom)}" x2="${rx}" y2="${transformY(section.top)}" stroke="#a8a29e" stroke-width="${0.5 * scale}" opacity="0.6" />\n`;
           }
           svg += `  </g>\n`;
         }
 
         if (panelType === "raised") {
           const innerPad = 10;
-          const innerPts = getInnerProfilePoints(
+          const innerPts = getPanelPoints(
+            section,
             width, height,
-            currentLS + innerPad, currentRS + innerPad, currentTR + innerPad, currentBR + innerPad,
+            leftStile, rightStile,
+            topRail, bottomRail,
+            leftAngledRailWidth, rightAngledRailWidth,
             angledLeft, angledRight,
             leftCutW, leftCutH,
             rightCutW, rightCutH,
-            leftAngledRailWidth,
-            rightAngledRailWidth
+            innerPad // inset
           );
           if (innerPts.length > 2) {
             const innerPathD = `M ${innerPts.map(p => `${toX(p.x)} ${transformY(p.y)}`).join(" L ")} Z`;

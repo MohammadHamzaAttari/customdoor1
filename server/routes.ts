@@ -19,6 +19,7 @@ import {
 import { verifyDoorPrice } from "./pricing";
 import { createShopifyDraftOrder, createQuickCheckout } from "./shopify";
 import { registerOAuthRoutes } from "./oauth";
+import { isAuthenticated } from "./auth";
 
 export async function registerRoutes(app: Express): Promise<Server> {
   // Database Initial Migration (Ensures preview_cache exists in Production without VPC access)
@@ -45,7 +46,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // CUSTOMER ENDPOINTS
   // =====================================================
 
-  app.get("/api/customers", async (req, res) => {
+  app.get("/api/customers", isAuthenticated, async (req, res) => {
     try {
       const customers = await storage.getAllCustomers();
       res.json(customers);
@@ -54,7 +55,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.get("/api/customers/:id", async (req, res) => {
+  app.get("/api/customers/:id", isAuthenticated, async (req, res) => {
     try {
       const id = parseInt(req.params.id);
       const customer = await storage.getCustomer(id);
@@ -92,7 +93,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.put("/api/customers/:id", async (req, res) => {
+  app.put("/api/customers/:id", isAuthenticated, async (req, res) => {
     try {
       const id = parseInt(req.params.id);
       const customerData = insertCustomerSchema.partial().parse(req.body);
@@ -160,7 +161,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // ORDER ENDPOINTS
   // =====================================================
 
-  app.get("/api/orders", async (req, res) => {
+  app.get("/api/orders", isAuthenticated, async (req, res) => {
     try {
       const customerId = req.query.customerId ? parseInt(req.query.customerId as string) : undefined;
       const orders = customerId
@@ -172,7 +173,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.get("/api/orders/:id", async (req, res) => {
+  app.get("/api/orders/:id", isAuthenticated, async (req, res) => {
     try {
       const id = parseInt(req.params.id);
       const order = await storage.getOrder(id);
@@ -215,7 +216,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.put("/api/orders/:id", async (req, res) => {
+  app.put("/api/orders/:id", isAuthenticated, async (req, res) => {
     try {
       const id = parseInt(req.params.id);
       const body = { ...req.body };
@@ -428,7 +429,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.put("/api/settings/:key", async (req, res) => {
+  app.put("/api/settings/:key", isAuthenticated, async (req, res) => {
     try {
       const { value } = req.body;
       if (typeof value !== "string") {

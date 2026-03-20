@@ -693,6 +693,13 @@ export const useDoorConfig = create<DoorConfig & DoorConfigActions>()(
           state.getMinBorderForSide("BOTTOM")
         );
         const clamped = Math.max(min, safeNum(w, min));
+        
+        // Also apply default border width to angled rails and mid-rails to enforce global consistency
+        const updatedMidRails = state.midRails.map(rail => ({
+          ...rail,
+          dimension: clamped
+        }));
+
         const newState = {
           ...state,
           borderWidth: clamped,
@@ -700,6 +707,9 @@ export const useDoorConfig = create<DoorConfig & DoorConfigActions>()(
           rightStile: clamped,
           topRail: clamped,
           bottomRail: clamped,
+          leftAngledRailWidth: clamped,
+          rightAngledRailWidth: clamped,
+          midRails: updatedMidRails,
           isNewSession: false,
           _hasInteracted: true,
         };

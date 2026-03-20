@@ -145,13 +145,17 @@ export function AngledCornersSection() {
     );
   };
 
+  const calculateDynamicDimensions = () => {
+    return null;
+  };
+
   return (
     <div className="space-y-6">
       {/* Global validation status */}
       {(angledLeft || angledRight) && (
         <div
           className={cn(
-            "p-3 rounded-lg border flex items-start gap-2",
+            "p-3 rounded-lg border flex items-start gap-2 mb-4",
             hasErrors
               ? "bg-red-50 border-red-200"
               : hasWarnings
@@ -184,7 +188,8 @@ export function AngledCornersSection() {
         </div>
       )}
 
-
+      {/* Dynamic Data Readout */}
+      {calculateDynamicDimensions()}
 
       {/* LEFT ANGLE */}
       <div className="space-y-4">

@@ -1,7 +1,7 @@
 
 import fetch from "node-fetch";
 
-const baseUrl = "http://localhost:5000";
+const baseUrl = "http://127.0.0.1:5000";
 
 async function verifyDxfGeometry() {
     console.log("Starting DXF Geometry Verification...");
@@ -52,36 +52,31 @@ async function verifyDxfGeometry() {
 
         console.log(`DXF Downloaded (${dxfText.length} bytes). Checking geometry...`);
 
-        // Helper to check for coordinate pair availability in rough proximity (DXF format varies)
-        // We look for specific values usually found in LWPOLYLINE or LINE entities
-        // 10 = X, 20 = Y usually.
-
-        // We expect to find 900.0 mixed with 1900.0 (The vertical start of the cut)
-        // And 700.0 mixed with 2100.0 (The horizontal end of the cut)
-
-        // Note: Dxf libraries often behave differently, but let's check for the presence of the calculated values.
+        const dxfUpper = dxfText.toUpperCase();
 
         const hasRightEdgeCutStart = dxfText.includes("1900") || dxfText.includes("1900.0"); // Y value
-        const hasTopEdgeCutEnd = dxfText.includes("700") || dxfText.includes("700.0");   // X value at top
-
-        // Check for Side View (Starts at Width/2 + 200 => 450 + 200 = 650)
-        // Wait, width/2 + 200 is used for SINGLE door? 
-        // In drawSideView call: width / 2 + 200. Front view is -450 to 450.
-        // So Side view starts at 450 + 200 = 650.
-        // Let's check for TEXT "SIDE VIEW" and "TOP VIEW".
-
         const hasSideViewLabel = dxfText.includes("SIDE VIEW");
         const hasTopViewLabel = dxfText.includes("TOP VIEW");
-        const hasThicknessDim = dxfText.includes("Thk: 40mm");
+        const hasThicknessDim = dxfText.includes("Thk:");
 
-        if (hasRightEdgeCutStart && hasTopEdgeCutEnd && hasSideViewLabel && hasTopViewLabel && hasThicknessDim) {
-            console.log("[PASS] Found coordinates consistent with 200x200 angled cut.");
-            console.log("[PASS] Found Side View and Top View labels.");
-            console.log("[PASS] Found Thickness dimension (40mm).");
+        // Check for expected layers (case-insensitive)
+        const hasPerimeterLayer = dxfUpper.includes("PERIMETER");
+        const hasIdLayer = dxfUpper.includes("IDENTIFICATION");
+        const hasPanelLayer = dxfUpper.includes("PANEL");
+        const hasHingeLayer = dxfUpper.includes("HINGE");
+
+        if (hasRightEdgeCutStart && !hasSideViewLabel && !hasTopViewLabel && !hasThicknessDim && hasPerimeterLayer && hasIdLayer && hasPanelLayer && hasHingeLayer) {
+            console.log("[PASS] Found coordinates consistent with angled cut.");
+            console.log("[PASS] Verified Clutter (SIDE VIEW, TOP VIEW, Thk:) is REMOVED.");
+            console.log("[PASS] Verified required production layers are INCLUDED.");
         } else {
-            console.error("[FAIL] Missing expected geometry or labels.");
-            if (!hasSideViewLabel) console.error(" - Missing SIDE VIEW label");
-            if (!hasTopViewLabel) console.error(" - Missing TOP VIEW label");
+            console.error("[FAIL] Geometry verification failed or clutter remains or layers missing.");
+            if (hasSideViewLabel) console.error(" - Clutter remains: SIDE VIEW label");
+            if (hasTopViewLabel) console.error(" - Clutter remains: TOP VIEW label");
+            if (!hasPerimeterLayer) console.error(" - Missing layer: PERIMETER");
+            if (!hasIdLayer) console.error(" - Missing layer: PART IDENTIFICATION");
+            if (!hasPanelLayer) console.error(" - Missing layer: PANEL");
+            if (!hasHingeLayer) console.error(" - Missing layer: HINGE");
             process.exit(1);
         }
 

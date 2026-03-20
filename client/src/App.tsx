@@ -7,6 +7,23 @@ import { Route, Switch } from "wouter";
 // ⚡ Lazy load pages - these won't be in the initial bundle
 const DoorConfigurator = React.lazy(() => import("./pages/DoorConfigurator"));
 const CheckoutPage = React.lazy(() => import("./pages/CheckoutPage"));
+const AdminDashboard = React.lazy(() => import("./pages/AdminDashboard"));
+const AdminLogin = React.lazy(() => import("./pages/AdminLogin"));
+const ForgotPassword = React.lazy(() => import("./pages/ForgotPassword"));
+const ResetPassword = React.lazy(() => import("./pages/ResetPassword"));
+import { AuthProvider, useAuth } from "./hooks/use-auth";
+
+function ProtectedAdminRoute() {
+  const { user, isLoading } = useAuth();
+
+  if (isLoading) return <PageLoader />;
+  if (!user) {
+    // Redirect to login if not authenticated
+    return <AdminLogin />;
+  }
+
+  return <AdminDashboard />;
+}
 
 // Premium lightweight loading fallback
 function PageLoader() {
@@ -36,14 +53,20 @@ function PageLoader() {
 function App() {
   return (
     <QueryClientProvider client={queryClient}>
-      <Suspense fallback={<PageLoader />}>
-        <Switch>
-          <Route path="/checkout" component={CheckoutPage} />
-          <Route path="/" component={DoorConfigurator} />
-          <Route component={DoorConfigurator} />
-        </Switch>
-      </Suspense>
-      <Toaster position="top-right" />
+      <AuthProvider>
+        <Suspense fallback={<PageLoader />}>
+          <Switch>
+            <Route path="/admin/login" component={AdminLogin} />
+            <Route path="/admin/forgot-password" component={ForgotPassword} />
+            <Route path="/admin/reset-password" component={ResetPassword} />
+            <Route path="/admin" component={ProtectedAdminRoute} />
+            <Route path="/checkout" component={CheckoutPage} />
+            <Route path="/" component={DoorConfigurator} />
+            <Route component={DoorConfigurator} />
+          </Switch>
+        </Suspense>
+        <Toaster position="top-right" />
+      </AuthProvider>
     </QueryClientProvider>
   );
 }

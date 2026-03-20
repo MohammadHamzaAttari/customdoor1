@@ -1,0 +1,531 @@
+
+> custom-door-designer@1.0.0 dev
+> tsx watch server/index.ts
+
+[shopify-api/INFO] version 12.3.0, environment Node v20.19.5
+[shopify-api/INFO] Future flag customerAddressDefaultFix is disabled.
+
+  Enable this flag to change the CustomerAddress classes to expose a 'is_default' property instead of 'default' when fetching data.
+
+[shopify-api/INFO] Future flag unstable_managedPricingSupport is disabled.
+
+  Enable this flag to support managed pricing, so apps can check for payments without needing a billing config. Learn more at https://shopify.dev/docs/apps/launch/billing/managed-pricing
+
+[dotenv@17.2.3] injecting env (0) from .env -- tip: ⚙️  load multiple .env files with { path: ['.env.local', '.env'] }
+🚀 Running manual migrations...
+ℹ️ 'STANDARD_9MM' already exists in panel_type enum.
+[DB] Verifying preview_cache table...
+[DB] Table verified.
+🚀 Server running on http://localhost:5000
+2:06:27 PM [tsx] unlink in ./vite.config.ts.timestamp-1773738387349-d71ef8d72295c.mjs Restarting...
+c[shopify-api/INFO] version 12.3.0, environment Node v20.19.5
+[shopify-api/INFO] Future flag customerAddressDefaultFix is disabled.
+
+  Enable this flag to change the CustomerAddress classes to expose a 'is_default' property instead of 'default' when fetching data.
+
+[shopify-api/INFO] Future flag unstable_managedPricingSupport is disabled.
+
+  Enable this flag to support managed pricing, so apps can check for payments without needing a billing config. Learn more at https://shopify.dev/docs/apps/launch/billing/managed-pricing
+
+[dotenv@17.2.3] injecting env (0) from .env -- tip: 🗂️ backup and recover secrets: https://dotenvx.com/ops
+🚀 Running manual migrations...
+ℹ️ 'STANDARD_9MM' already exists in panel_type enum.
+[DB] Verifying preview_cache table...
+[DB] Table verified.
+🚀 Server running on http://localhost:5000
+2:06:32 PM [tsx] unlink in ./vite.config.ts.timestamp-1773738392085-fb8e36af8439d.mjs Restarting...
+c[shopify-api/INFO] version 12.3.0, environment Node v20.19.5
+[shopify-api/INFO] Future flag customerAddressDefaultFix is disabled.
+
+  Enable this flag to change the CustomerAddress classes to expose a 'is_default' property instead of 'default' when fetching data.
+
+[shopify-api/INFO] Future flag unstable_managedPricingSupport is disabled.
+
+  Enable this flag to support managed pricing, so apps can check for payments without needing a billing config. Learn more at https://shopify.dev/docs/apps/launch/billing/managed-pricing
+
+[dotenv@17.2.3] injecting env (0) from .env -- tip: 🛠️  run anywhere with `dotenvx run -- yourcommand`
+🚀 Running manual migrations...
+ℹ️ 'STANDARD_9MM' already exists in panel_type enum.
+[DB] Verifying preview_cache table...
+[DB] Table verified.
+🚀 Server running on http://localhost:5000
+2:06:37 PM [tsx] unlink in ./vite.config.ts.timestamp-1773738397370-d9efad0dc0bde.mjs Restarting...
+fatal error: all goroutines are asleep - deadlock!
+c
+goroutine 1 [chan receive]:
+github.com/evanw/esbuild/internal/helpers.(*ThreadSafeWaitGroup).Wait(...)
+	github.com/evanw/esbuild/internal/helpers/waitgroup.go:36
+main.runService.func2()
+	github.com/evanw/esbuild/cmd/esbuild/service.go:114 +0x59
+main.runService(0x1)
+	github.com/evanw/esbuild/cmd/esbuild/service.go:160 +0x4ed
+main.main()
+	github.com/evanw/esbuild/cmd/esbuild/main.go:241 +0xa29
+
+goroutine 6 [chan receive]:
+main.runService.func1()
+	github.com/evanw/esbuild/cmd/esbuild/service.go:98 +0x4a
+created by main.runService
+	github.com/evanw/esbuild/cmd/esbuild/service.go:97 +0x1e5
+
+goroutine 7 [chan receive]:
+main.(*serviceType).sendRequest(0xc000170060, {0x94bc00, 0xc000245470})
+	github.com/evanw/esbuild/cmd/esbuild/service.go:192 +0xfa
+main.runService.func3()
+	github.com/evanw/esbuild/cmd/esbuild/service.go:125 +0x39
+created by main.runService
+	github.com/evanw/esbuild/cmd/esbuild/service.go:122 +0x31c
+
+goroutine 74 [chan receive]:
+main.(*serviceType).sendRequest(0xc000170060, {0x94bc00, 0xc0002fe030})
+	github.com/evanw/esbuild/cmd/esbuild/service.go:192 +0xfa
+main.(*serviceType).convertPlugins.func2.3({{0xc00002b540, 0x5}, {0xc0003ba230, 0x46}, {0x9bd552, 0x4}, {0xc0003ba230, 0x3d}, 0x2, {0x0, ...}, ...})
+	github.com/evanw/esbuild/cmd/esbuild/service.go:985 +0x933
+github.com/evanw/esbuild/pkg/api.(*pluginImpl).onResolve.func1({{0xc00002b540, 0x5}, {0xc0003ba230, 0x3d}, {0x0, 0x0}, {{0xc0003ba230, 0x46}, {0x9bd552, 0x4}, ...}, ...})
+	github.com/evanw/esbuild/pkg/api/api_impl.go:1894 +0x215
+github.com/evanw/esbuild/internal/bundler.RunOnResolvePlugins({_, _, _}, _, {0xc000216bd0, 0xc000010450, 0xc000010468, 0xc00007a5c0, 0x6, 0xc0000bfbf0}, ...)
+	github.com/evanw/esbuild/internal/bundler/bundler.go:939 +0x8b5
+github.com/evanw/esbuild/internal/bundler.parseFile({{0xab5890, 0xc00007a5e0}, {0xc000216bd0, 0xc000010450, 0xc000010468, 0xc00007a5c0, 0x6, 0xc0000bfbf0}, 0xc000113200, 0xc0000a4240, ...})
+	github.com/evanw/esbuild/internal/bundler/bundler.go:500 +0x31d5
+created by github.com/evanw/esbuild/internal/bundler.(*scanner).maybeParseFile
+	github.com/evanw/esbuild/internal/bundler/bundler.go:1494 +0xaeb
+
+goroutine 70 [chan receive]:
+github.com/evanw/esbuild/internal/bundler.(*scanner).scanAllDependencies(0xc000113680)
+	github.com/evanw/esbuild/internal/bundler/bundler.go:2024 +0x239
+github.com/evanw/esbuild/internal/bundler.ScanBundle(_, {_, _, _, _, _, _}, {_, _}, 0xc0000a4240, ...)
+	github.com/evanw/esbuild/internal/bundler/bundler.go:1371 +0xb36
+github.com/evanw/esbuild/pkg/api.rebuildImpl({0xc0000a4240, {0xc000010390, 0x1, 0x1}, {0x0, 0x0, 0x0}, {0x0, 0x1, 0x0, ...}, ...}, ...)
+	github.com/evanw/esbuild/pkg/api/api_impl.go:1458 +0x2e5
+github.com/evanw/esbuild/pkg/api.(*internalContext).rebuild(_)
+	github.com/evanw/esbuild/pkg/api/api_impl.go:977 +0x2a5
+github.com/evanw/esbuild/pkg/api.(*internalContext).Rebuild(0x1?)
+	github.com/evanw/esbuild/pkg/api/api_impl.go:1038 +0x58
+main.(*serviceType).handleIncomingPacket.func5()
+	github.com/evanw/esbuild/cmd/esbuild/service.go:293 +0xd5
+created by main.(*serviceType).handleIncomingPacket
+	github.com/evanw/esbuild/cmd/esbuild/service.go:290 +0x118d
+[shopify-api/INFO] version 12.3.0, environment Node v20.19.5
+[shopify-api/INFO] Future flag customerAddressDefaultFix is disabled.
+
+  Enable this flag to change the CustomerAddress classes to expose a 'is_default' property instead of 'default' when fetching data.
+
+[shopify-api/INFO] Future flag unstable_managedPricingSupport is disabled.
+
+  Enable this flag to support managed pricing, so apps can check for payments without needing a billing config. Learn more at https://shopify.dev/docs/apps/launch/billing/managed-pricing
+
+[dotenv@17.2.3] injecting env (0) from .env -- tip: 🔑 add access controls to secrets: https://dotenvx.com/ops
+🚀 Running manual migrations...
+ℹ️ 'STANDARD_9MM' already exists in panel_type enum.
+[DB] Verifying preview_cache table...
+[DB] Table verified.
+🚀 Server running on http://localhost:5000
+2:06:42 PM [tsx] unlink in ./vite.config.ts.timestamp-1773738402010-ea67f1f16e6fe.mjs Restarting...
+c[shopify-api/INFO] version 12.3.0, environment Node v20.19.5
+[shopify-api/INFO] Future flag customerAddressDefaultFix is disabled.
+
+  Enable this flag to change the CustomerAddress classes to expose a 'is_default' property instead of 'default' when fetching data.
+
+[shopify-api/INFO] Future flag unstable_managedPricingSupport is disabled.
+
+  Enable this flag to support managed pricing, so apps can check for payments without needing a billing config. Learn more at https://shopify.dev/docs/apps/launch/billing/managed-pricing
+
+[dotenv@17.2.3] injecting env (0) from .env -- tip: 👥 sync secrets across teammates & machines: https://dotenvx.com/ops
+🚀 Running manual migrations...
+ℹ️ 'STANDARD_9MM' already exists in panel_type enum.
+[DB] Verifying preview_cache table...
+[DB] Table verified.
+🚀 Server running on http://localhost:5000
+2:06:47 PM [tsx] unlink in ./vite.config.ts.timestamp-1773738406782-46126232629dd.mjs Restarting...
+c[shopify-api/INFO] version 12.3.0, environment Node v20.19.5
+[shopify-api/INFO] Future flag customerAddressDefaultFix is disabled.
+
+  Enable this flag to change the CustomerAddress classes to expose a 'is_default' property instead of 'default' when fetching data.
+
+[shopify-api/INFO] Future flag unstable_managedPricingSupport is disabled.
+
+  Enable this flag to support managed pricing, so apps can check for payments without needing a billing config. Learn more at https://shopify.dev/docs/apps/launch/billing/managed-pricing
+
+[dotenv@17.2.3] injecting env (0) from .env -- tip: 🔄 add secrets lifecycle management: https://dotenvx.com/ops
+🚀 Running manual migrations...
+ℹ️ 'STANDARD_9MM' already exists in panel_type enum.
+[DB] Verifying preview_cache table...
+[DB] Table verified.
+🚀 Server running on http://localhost:5000
+2:06:51 PM [tsx] unlink in ./vite.config.ts.timestamp-1773738411346-d06e98e3f4b6f.mjs Restarting...
+c[shopify-api/INFO] version 12.3.0, environment Node v20.19.5
+[shopify-api/INFO] Future flag customerAddressDefaultFix is disabled.
+
+  Enable this flag to change the CustomerAddress classes to expose a 'is_default' property instead of 'default' when fetching data.
+
+[shopify-api/INFO] Future flag unstable_managedPricingSupport is disabled.
+
+  Enable this flag to support managed pricing, so apps can check for payments without needing a billing config. Learn more at https://shopify.dev/docs/apps/launch/billing/managed-pricing
+
+[dotenv@17.2.3] injecting env (0) from .env -- tip: ✅ audit secrets and track compliance: https://dotenvx.com/ops
+🚀 Running manual migrations...
+ℹ️ 'STANDARD_9MM' already exists in panel_type enum.
+[DB] Verifying preview_cache table...
+[DB] Table verified.
+🚀 Server running on http://localhost:5000
+2:06:55 PM [tsx] unlink in ./vite.config.ts.timestamp-1773738415233-9b46913552b5.mjs Restarting...
+c[shopify-api/INFO] version 12.3.0, environment Node v20.19.5
+[shopify-api/INFO] Future flag customerAddressDefaultFix is disabled.
+
+  Enable this flag to change the CustomerAddress classes to expose a 'is_default' property instead of 'default' when fetching data.
+
+[shopify-api/INFO] Future flag unstable_managedPricingSupport is disabled.
+
+  Enable this flag to support managed pricing, so apps can check for payments without needing a billing config. Learn more at https://shopify.dev/docs/apps/launch/billing/managed-pricing
+
+[dotenv@17.2.3] injecting env (0) from .env -- tip: ⚙️  enable debug logging with { debug: true }
+🚀 Running manual migrations...
+ℹ️ 'STANDARD_9MM' already exists in panel_type enum.
+[DB] Verifying preview_cache table...
+[DB] Table verified.
+🚀 Server running on http://localhost:5000
+2:07:00 PM [tsx] unlink in ./vite.config.ts.timestamp-1773738419895-84a29a68c0a5f.mjs Restarting...
+c[shopify-api/INFO] version 12.3.0, environment Node v20.19.5
+[shopify-api/INFO] Future flag customerAddressDefaultFix is disabled.
+
+  Enable this flag to change the CustomerAddress classes to expose a 'is_default' property instead of 'default' when fetching data.
+
+[shopify-api/INFO] Future flag unstable_managedPricingSupport is disabled.
+
+  Enable this flag to support managed pricing, so apps can check for payments without needing a billing config. Learn more at https://shopify.dev/docs/apps/launch/billing/managed-pricing
+
+[dotenv@17.2.3] injecting env (0) from .env -- tip: ✅ audit secrets and track compliance: https://dotenvx.com/ops
+🚀 Running manual migrations...
+ℹ️ 'STANDARD_9MM' already exists in panel_type enum.
+[DB] Verifying preview_cache table...
+[DB] Table verified.
+🚀 Server running on http://localhost:5000
+2:07:04 PM [tsx] unlink in ./vite.config.ts.timestamp-1773738424576-5f5d1cac8e9a7.mjs Restarting...
+fatal error: all goroutines are asleep - deadlock!
+c
+goroutine 1 [chan receive]:
+github.com/evanw/esbuild/internal/helpers.(*ThreadSafeWaitGroup).Wait(...)
+	github.com/evanw/esbuild/internal/helpers/waitgroup.go:36
+main.runService.func2()
+	github.com/evanw/esbuild/cmd/esbuild/service.go:114 +0x59
+main.runService(0x1)
+	github.com/evanw/esbuild/cmd/esbuild/service.go:160 +0x4ed
+main.main()
+	github.com/evanw/esbuild/cmd/esbuild/main.go:241 +0xa29
+
+goroutine 6 [chan receive]:
+main.runService.func1()
+	github.com/evanw/esbuild/cmd/esbuild/service.go:98 +0x4a
+created by main.runService
+	github.com/evanw/esbuild/cmd/esbuild/service.go:97 +0x1e5
+
+goroutine 7 [chan receive]:
+main.(*serviceType).sendRequest(0xc000170060, {0x94bc00, 0xc00024ce10})
+	github.com/evanw/esbuild/cmd/esbuild/service.go:192 +0xfa
+main.runService.func3()
+	github.com/evanw/esbuild/cmd/esbuild/service.go:125 +0x39
+created by main.runService
+	github.com/evanw/esbuild/cmd/esbuild/service.go:122 +0x31c
+
+goroutine 38 [chan receive]:
+github.com/evanw/esbuild/internal/bundler.(*scanner).scanAllDependencies(0xc000113200)
+	github.com/evanw/esbuild/internal/bundler/bundler.go:2024 +0x239
+github.com/evanw/esbuild/internal/bundler.ScanBundle(_, {_, _, _, _, _, _}, {_, _}, 0xc0001a2540, ...)
+	github.com/evanw/esbuild/internal/bundler/bundler.go:1371 +0xb36
+github.com/evanw/esbuild/pkg/api.rebuildImpl({0xc0001a2540, {0xc00018a378, 0x1, 0x1}, {0x0, 0x0, 0x0}, {0x0, 0x1, 0x0, ...}, ...}, ...)
+	github.com/evanw/esbuild/pkg/api/api_impl.go:1458 +0x2e5
+github.com/evanw/esbuild/pkg/api.(*internalContext).rebuild(_)
+	github.com/evanw/esbuild/pkg/api/api_impl.go:977 +0x2a5
+github.com/evanw/esbuild/pkg/api.(*internalContext).Rebuild(0xc0000e2000?)
+	github.com/evanw/esbuild/pkg/api/api_impl.go:1038 +0x58
+main.(*serviceType).handleIncomingPacket.func5()
+	github.com/evanw/esbuild/cmd/esbuild/service.go:293 +0xd5
+created by main.(*serviceType).handleIncomingPacket
+	github.com/evanw/esbuild/cmd/esbuild/service.go:290 +0x118d
+
+goroutine 24 [chan receive]:
+main.(*serviceType).sendRequest(0xc000170060, {0x94bc00, 0xc00024cde0})
+	github.com/evanw/esbuild/cmd/esbuild/service.go:192 +0xfa
+main.(*serviceType).convertPlugins.func2.3({{0xc0002169a0, 0x10}, {0xc00002c410, 0x46}, {0x9bd552, 0x4}, {0xc00002c410, 0x3d}, 0x2, {0x0, ...}, ...})
+	github.com/evanw/esbuild/cmd/esbuild/service.go:985 +0x933
+github.com/evanw/esbuild/pkg/api.(*pluginImpl).onResolve.func1({{0xc0002169a0, 0x10}, {0xc00002c410, 0x3d}, {0x0, 0x0}, {{0xc00002c410, 0x46}, {0x9bd552, 0x4}, ...}, ...})
+	github.com/evanw/esbuild/pkg/api/api_impl.go:1894 +0x215
+github.com/evanw/esbuild/internal/bundler.RunOnResolvePlugins({_, _, _}, _, {0xc00030c000, 0xc0000101b0, 0xc0000101c8, 0xc00018e020, 0x6, 0xc0001faed0}, ...)
+	github.com/evanw/esbuild/internal/bundler/bundler.go:939 +0x8b5
+github.com/evanw/esbuild/internal/bundler.parseFile({{0xab5890, 0xc00018e040}, {0xc00030c000, 0xc0000101b0, 0xc0000101c8, 0xc00018e020, 0x6, 0xc0001faed0}, 0xc000112d80, 0xc0001a2540, ...})
+	github.com/evanw/esbuild/internal/bundler/bundler.go:500 +0x31d5
+created by github.com/evanw/esbuild/internal/bundler.(*scanner).maybeParseFile
+	github.com/evanw/esbuild/internal/bundler/bundler.go:1494 +0xaeb
+[shopify-api/INFO] version 12.3.0, environment Node v20.19.5
+[shopify-api/INFO] Future flag customerAddressDefaultFix is disabled.
+
+  Enable this flag to change the CustomerAddress classes to expose a 'is_default' property instead of 'default' when fetching data.
+
+[shopify-api/INFO] Future flag unstable_managedPricingSupport is disabled.
+
+  Enable this flag to support managed pricing, so apps can check for payments without needing a billing config. Learn more at https://shopify.dev/docs/apps/launch/billing/managed-pricing
+
+[dotenv@17.2.3] injecting env (0) from .env -- tip: ✅ audit secrets and track compliance: https://dotenvx.com/ops
+🚀 Running manual migrations...
+ℹ️ 'STANDARD_9MM' already exists in panel_type enum.
+[DB] Verifying preview_cache table...
+[DB] Table verified.
+🚀 Server running on http://localhost:5000
+2:07:09 PM [tsx] unlink in ./vite.config.ts.timestamp-1773738429660-3977a96f00f0d.mjs Restarting...
+c[shopify-api/INFO] version 12.3.0, environment Node v20.19.5
+[shopify-api/INFO] Future flag customerAddressDefaultFix is disabled.
+
+  Enable this flag to change the CustomerAddress classes to expose a 'is_default' property instead of 'default' when fetching data.
+
+[shopify-api/INFO] Future flag unstable_managedPricingSupport is disabled.
+
+  Enable this flag to support managed pricing, so apps can check for payments without needing a billing config. Learn more at https://shopify.dev/docs/apps/launch/billing/managed-pricing
+
+[dotenv@17.2.3] injecting env (0) from .env -- tip: 🔐 prevent building .env in docker: https://dotenvx.com/prebuild
+🚀 Running manual migrations...
+ℹ️ 'STANDARD_9MM' already exists in panel_type enum.
+[DB] Verifying preview_cache table...
+[DB] Table verified.
+🚀 Server running on http://localhost:5000
+2:07:15 PM [tsx] unlink in ./vite.config.ts.timestamp-1773738434945-4148d800f8b8a.mjs Restarting...
+c[shopify-api/INFO] version 12.3.0, environment Node v20.19.5
+[shopify-api/INFO] Future flag customerAddressDefaultFix is disabled.
+
+  Enable this flag to change the CustomerAddress classes to expose a 'is_default' property instead of 'default' when fetching data.
+
+[shopify-api/INFO] Future flag unstable_managedPricingSupport is disabled.
+
+  Enable this flag to support managed pricing, so apps can check for payments without needing a billing config. Learn more at https://shopify.dev/docs/apps/launch/billing/managed-pricing
+
+[dotenv@17.2.3] injecting env (0) from .env -- tip: 🗂️ backup and recover secrets: https://dotenvx.com/ops
+🚀 Running manual migrations...
+ℹ️ 'STANDARD_9MM' already exists in panel_type enum.
+[DB] Verifying preview_cache table...
+[DB] Table verified.
+🚀 Server running on http://localhost:5000
+2:07:20 PM [tsx] unlink in ./vite.config.ts.timestamp-1773738440248-6dc06fcaf4e5b.mjs Restarting...
+c[shopify-api/INFO] version 12.3.0, environment Node v20.19.5
+[shopify-api/INFO] Future flag customerAddressDefaultFix is disabled.
+
+  Enable this flag to change the CustomerAddress classes to expose a 'is_default' property instead of 'default' when fetching data.
+
+[shopify-api/INFO] Future flag unstable_managedPricingSupport is disabled.
+
+  Enable this flag to support managed pricing, so apps can check for payments without needing a billing config. Learn more at https://shopify.dev/docs/apps/launch/billing/managed-pricing
+
+[dotenv@17.2.3] injecting env (0) from .env -- tip: ⚙️  suppress all logs with { quiet: true }
+🚀 Running manual migrations...
+ℹ️ 'STANDARD_9MM' already exists in panel_type enum.
+[DB] Verifying preview_cache table...
+[DB] Table verified.
+🚀 Server running on http://localhost:5000
+2:07:23 PM [tsx] unlink in ./vite.config.ts.timestamp-1773738443277-2a441f9d2ebf6.mjs Restarting...
+c[shopify-api/INFO] version 12.3.0, environment Node v20.19.5
+[shopify-api/INFO] Future flag customerAddressDefaultFix is disabled.
+
+  Enable this flag to change the CustomerAddress classes to expose a 'is_default' property instead of 'default' when fetching data.
+
+[shopify-api/INFO] Future flag unstable_managedPricingSupport is disabled.
+
+  Enable this flag to support managed pricing, so apps can check for payments without needing a billing config. Learn more at https://shopify.dev/docs/apps/launch/billing/managed-pricing
+
+[dotenv@17.2.3] injecting env (0) from .env -- tip: 🔄 add secrets lifecycle management: https://dotenvx.com/ops
+🚀 Running manual migrations...
+ℹ️ 'STANDARD_9MM' already exists in panel_type enum.
+[DB] Verifying preview_cache table...
+[DB] Table verified.
+🚀 Server running on http://localhost:5000
+2:07:26 PM [tsx] unlink in ./vite.config.ts.timestamp-1773738446500-ccfee3e0e166f.mjs Restarting...
+c[shopify-api/INFO] version 12.3.0, environment Node v20.19.5
+[shopify-api/INFO] Future flag customerAddressDefaultFix is disabled.
+
+  Enable this flag to change the CustomerAddress classes to expose a 'is_default' property instead of 'default' when fetching data.
+
+[shopify-api/INFO] Future flag unstable_managedPricingSupport is disabled.
+
+  Enable this flag to support managed pricing, so apps can check for payments without needing a billing config. Learn more at https://shopify.dev/docs/apps/launch/billing/managed-pricing
+
+[dotenv@17.2.3] injecting env (0) from .env -- tip: ⚙️  suppress all logs with { quiet: true }
+🚀 Running manual migrations...
+ℹ️ 'STANDARD_9MM' already exists in panel_type enum.
+[DB] Verifying preview_cache table...
+[DB] Table verified.
+🚀 Server running on http://localhost:5000
+2:07:30 PM [tsx] unlink in ./vite.config.ts.timestamp-1773738450257-f8afcd0ee7e8c.mjs Restarting...
+c[shopify-api/INFO] version 12.3.0, environment Node v20.19.5
+[shopify-api/INFO] Future flag customerAddressDefaultFix is disabled.
+
+  Enable this flag to change the CustomerAddress classes to expose a 'is_default' property instead of 'default' when fetching data.
+
+[shopify-api/INFO] Future flag unstable_managedPricingSupport is disabled.
+
+  Enable this flag to support managed pricing, so apps can check for payments without needing a billing config. Learn more at https://shopify.dev/docs/apps/launch/billing/managed-pricing
+
+[dotenv@17.2.3] injecting env (0) from .env -- tip: ⚙️  specify custom .env file path with { path: '/custom/path/.env' }
+🚀 Running manual migrations...
+ℹ️ 'STANDARD_9MM' already exists in panel_type enum.
+[DB] Verifying preview_cache table...
+[DB] Table verified.
+🚀 Server running on http://localhost:5000
+2:07:33 PM [tsx] unlink in ./vite.config.ts.timestamp-1773738453504-e95e604288fea.mjs Restarting...
+c[shopify-api/INFO] version 12.3.0, environment Node v20.19.5
+[shopify-api/INFO] Future flag customerAddressDefaultFix is disabled.
+
+  Enable this flag to change the CustomerAddress classes to expose a 'is_default' property instead of 'default' when fetching data.
+
+[shopify-api/INFO] Future flag unstable_managedPricingSupport is disabled.
+
+  Enable this flag to support managed pricing, so apps can check for payments without needing a billing config. Learn more at https://shopify.dev/docs/apps/launch/billing/managed-pricing
+
+[dotenv@17.2.3] injecting env (0) from .env -- tip: 📡 add observability to secrets: https://dotenvx.com/ops
+🚀 Running manual migrations...
+ℹ️ 'STANDARD_9MM' already exists in panel_type enum.
+[DB] Verifying preview_cache table...
+[DB] Table verified.
+🚀 Server running on http://localhost:5000
+2:07:36 PM [tsx] unlink in ./vite.config.ts.timestamp-1773738456297-f12c455299194.mjs Restarting...
+c[shopify-api/INFO] version 12.3.0, environment Node v20.19.5
+[shopify-api/INFO] Future flag customerAddressDefaultFix is disabled.
+
+  Enable this flag to change the CustomerAddress classes to expose a 'is_default' property instead of 'default' when fetching data.
+
+[shopify-api/INFO] Future flag unstable_managedPricingSupport is disabled.
+
+  Enable this flag to support managed pricing, so apps can check for payments without needing a billing config. Learn more at https://shopify.dev/docs/apps/launch/billing/managed-pricing
+
+[dotenv@17.2.3] injecting env (0) from .env -- tip: 🔐 prevent committing .env to code: https://dotenvx.com/precommit
+🚀 Running manual migrations...
+ℹ️ 'STANDARD_9MM' already exists in panel_type enum.
+[DB] Verifying preview_cache table...
+[DB] Table verified.
+🚀 Server running on http://localhost:5000
+2:07:39 PM [tsx] unlink in ./vite.config.ts.timestamp-1773738459176-aa2aae5ae2c5e.mjs Restarting...
+c[shopify-api/INFO] version 12.3.0, environment Node v20.19.5
+[shopify-api/INFO] Future flag customerAddressDefaultFix is disabled.
+
+  Enable this flag to change the CustomerAddress classes to expose a 'is_default' property instead of 'default' when fetching data.
+
+[shopify-api/INFO] Future flag unstable_managedPricingSupport is disabled.
+
+  Enable this flag to support managed pricing, so apps can check for payments without needing a billing config. Learn more at https://shopify.dev/docs/apps/launch/billing/managed-pricing
+
+[dotenv@17.2.3] injecting env (0) from .env -- tip: 🗂️ backup and recover secrets: https://dotenvx.com/ops
+🚀 Running manual migrations...
+ℹ️ 'STANDARD_9MM' already exists in panel_type enum.
+[DB] Verifying preview_cache table...
+[DB] Table verified.
+🚀 Server running on http://localhost:5000
+2:07:42 PM [tsx] unlink in ./vite.config.ts.timestamp-1773738462105-1396ba543368c.mjs Restarting...
+c[shopify-api/INFO] version 12.3.0, environment Node v20.19.5
+[shopify-api/INFO] Future flag customerAddressDefaultFix is disabled.
+
+  Enable this flag to change the CustomerAddress classes to expose a 'is_default' property instead of 'default' when fetching data.
+
+[shopify-api/INFO] Future flag unstable_managedPricingSupport is disabled.
+
+  Enable this flag to support managed pricing, so apps can check for payments without needing a billing config. Learn more at https://shopify.dev/docs/apps/launch/billing/managed-pricing
+
+[dotenv@17.2.3] injecting env (0) from .env -- tip: 🔑 add access controls to secrets: https://dotenvx.com/ops
+🚀 Running manual migrations...
+ℹ️ 'STANDARD_9MM' already exists in panel_type enum.
+[DB] Verifying preview_cache table...
+[DB] Table verified.
+🚀 Server running on http://localhost:5000
+2:07:45 PM [tsx] unlink in ./vite.config.ts.timestamp-1773738465495-e533aa9bbcf42.mjs Restarting...
+c[shopify-api/INFO] version 12.3.0, environment Node v20.19.5
+[shopify-api/INFO] Future flag customerAddressDefaultFix is disabled.
+
+  Enable this flag to change the CustomerAddress classes to expose a 'is_default' property instead of 'default' when fetching data.
+
+[shopify-api/INFO] Future flag unstable_managedPricingSupport is disabled.
+
+  Enable this flag to support managed pricing, so apps can check for payments without needing a billing config. Learn more at https://shopify.dev/docs/apps/launch/billing/managed-pricing
+
+[dotenv@17.2.3] injecting env (0) from .env -- tip: ⚙️  specify custom .env file path with { path: '/custom/path/.env' }
+🚀 Running manual migrations...
+ℹ️ 'STANDARD_9MM' already exists in panel_type enum.
+[DB] Verifying preview_cache table...
+[DB] Table verified.
+🚀 Server running on http://localhost:5000
+2:07:49 PM [tsx] unlink in ./vite.config.ts.timestamp-1773738469334-9bba0d4d97f39.mjs Restarting...
+c[shopify-api/INFO] version 12.3.0, environment Node v20.19.5
+[shopify-api/INFO] Future flag customerAddressDefaultFix is disabled.
+
+  Enable this flag to change the CustomerAddress classes to expose a 'is_default' property instead of 'default' when fetching data.
+
+[shopify-api/INFO] Future flag unstable_managedPricingSupport is disabled.
+
+  Enable this flag to support managed pricing, so apps can check for payments without needing a billing config. Learn more at https://shopify.dev/docs/apps/launch/billing/managed-pricing
+
+[dotenv@17.2.3] injecting env (0) from .env -- tip: 🛠️  run anywhere with `dotenvx run -- yourcommand`
+🚀 Running manual migrations...
+ℹ️ 'STANDARD_9MM' already exists in panel_type enum.
+[DB] Verifying preview_cache table...
+[DB] Table verified.
+🚀 Server running on http://localhost:5000
+2:07:52 PM [tsx] unlink in ./vite.config.ts.timestamp-1773738472435-ba059b84b775d.mjs Restarting...
+c[shopify-api/INFO] version 12.3.0, environment Node v20.19.5
+[shopify-api/INFO] Future flag customerAddressDefaultFix is disabled.
+
+  Enable this flag to change the CustomerAddress classes to expose a 'is_default' property instead of 'default' when fetching data.
+
+[shopify-api/INFO] Future flag unstable_managedPricingSupport is disabled.
+
+  Enable this flag to support managed pricing, so apps can check for payments without needing a billing config. Learn more at https://shopify.dev/docs/apps/launch/billing/managed-pricing
+
+[dotenv@17.2.3] injecting env (0) from .env -- tip: 👥 sync secrets across teammates & machines: https://dotenvx.com/ops
+🚀 Running manual migrations...
+ℹ️ 'STANDARD_9MM' already exists in panel_type enum.
+[DB] Verifying preview_cache table...
+[DB] Table verified.
+🚀 Server running on http://localhost:5000
+2:07:55 PM [tsx] unlink in ./vite.config.ts.timestamp-1773738475622-3c7e09e8e05b8.mjs Restarting...
+c[shopify-api/INFO] version 12.3.0, environment Node v20.19.5
+[shopify-api/INFO] Future flag customerAddressDefaultFix is disabled.
+
+  Enable this flag to change the CustomerAddress classes to expose a 'is_default' property instead of 'default' when fetching data.
+
+[shopify-api/INFO] Future flag unstable_managedPricingSupport is disabled.
+
+  Enable this flag to support managed pricing, so apps can check for payments without needing a billing config. Learn more at https://shopify.dev/docs/apps/launch/billing/managed-pricing
+
+[dotenv@17.2.3] injecting env (0) from .env -- tip: 🔐 prevent building .env in docker: https://dotenvx.com/prebuild
+🚀 Running manual migrations...
+ℹ️ 'STANDARD_9MM' already exists in panel_type enum.
+[DB] Verifying preview_cache table...
+[DB] Table verified.
+🚀 Server running on http://localhost:5000
+2:07:58 PM [tsx] unlink in ./vite.config.ts.timestamp-1773738478698-5886ebd6c6eab.mjs Restarting...
+c[shopify-api/INFO] version 12.3.0, environment Node v20.19.5
+[shopify-api/INFO] Future flag customerAddressDefaultFix is disabled.
+
+  Enable this flag to change the CustomerAddress classes to expose a 'is_default' property instead of 'default' when fetching data.
+
+[shopify-api/INFO] Future flag unstable_managedPricingSupport is disabled.
+
+  Enable this flag to support managed pricing, so apps can check for payments without needing a billing config. Learn more at https://shopify.dev/docs/apps/launch/billing/managed-pricing
+
+[dotenv@17.2.3] injecting env (0) from .env -- tip: 🔑 add access controls to secrets: https://dotenvx.com/ops
+🚀 Running manual migrations...
+ℹ️ 'STANDARD_9MM' already exists in panel_type enum.
+[DB] Verifying preview_cache table...
+[DB] Table verified.
+🚀 Server running on http://localhost:5000
+2:08:01 PM [tsx] unlink in ./vite.config.ts.timestamp-1773738481743-f13f27c64c1e3.mjs Restarting...
+c[shopify-api/INFO] version 12.3.0, environment Node v20.19.5
+[shopify-api/INFO] Future flag customerAddressDefaultFix is disabled.
+
+  Enable this flag to change the CustomerAddress classes to expose a 'is_default' property instead of 'default' when fetching data.
+
+[shopify-api/INFO] Future flag unstable_managedPricingSupport is disabled.
+
+  Enable this flag to support managed pricing, so apps can check for payments without needing a billing config. Learn more at https://shopify.dev/docs/apps/launch/billing/managed-pricing
+
+[dotenv@17.2.3] injecting env (0) from .env -- tip: 🛠️  run anywhere with `dotenvx run -- yourcommand`
+🚀 Running manual migrations...
+ℹ️ 'STANDARD_9MM' already exists in panel_type enum.
+[DB] Verifying preview_cache table...
+[DB] Table verified.
+🚀 Server running on http://localhost:5000
+2:08:04 PM [tsx] unlink in ./vite.config.ts.timestamp-1773738484697-db0d79defbcac.mjs Restarting...
+c

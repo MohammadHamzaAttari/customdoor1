@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 500 650" width="500" height="650">
+  <defs>
+    <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feGaussianBlur in="SourceAlpha" stdDeviation="3" />
+      <feOffset dx="2" dy="2" result="offsetblur" />
+      <feComponentTransfer>
+        <feFuncA type="linear" slope="0.2" />
+      </feComponentTransfer>
+      <feMerge>
+        <feMergeNode />
+        <feMergeNode in="SourceGraphic" />
+      </feMerge>
+    </filter>
+  </defs>
+  <!-- Background -->
+  <rect x="0" y="0" width="500" height="650" fill="#ffffff" />
+  <!-- Face Label (Match Door2D) -->
+  <text x="250" y="30" text-anchor="middle" fill="#2563eb" font-family="Liberation Sans, Arial, sans-serif" font-size="13" font-weight="700" letter-spacing="2">FRONT VIEW</text>
+  <defs><clipPath id="clip-79.99999999999997-1773653792887"><path d="M 79.99999999999997 528.6605657237938 L 79.99999999999997 177.9118136439268 L 363.4276206322795 121.3394342762063 L 420 121.3394342762063 L 420 528.6605657237938 Z" /></clipPath></defs>
+  <path d="M 79.99999999999997 528.6605657237938 L 79.99999999999997 177.9118136439268 L 363.4276206322795 121.3394342762063 L 420 121.3394342762063 L 420 528.6605657237938 Z" fill="#fafaf9" stroke="#44403c" stroke-width="0.8485856905158071" filter="url(#shadow)" />
+  <path d="M 122.42928452579032 421.1730449251248 L 377.5707154742097 421.1730449251248 L 377.5707154742097 381.5723793677205 L 122.42928452579032 381.5723793677205 Z" fill="#fafaf9" stroke="#52525b" stroke-width="0.5657237936772047" clip-path="url(#clip-79.99999999999997-1773653792887)" />
+  <circle cx="92.44592346089847" cy="197.71214642262896" r="9.900166389351082" fill="#a1a1aa" stroke="#52525b" stroke-width="0.5657237936772047" fill-opacity="0.3" stroke-dasharray="2.262895174708819 1.1314475873544094" />
+  <circle cx="92.44592346089847" cy="197.71214642262896" r="1.1314475873544094" fill="#52525b" />
+  <circle cx="92.44592346089847" cy="500.37437603993345" r="9.900166389351082" fill="#a1a1aa" stroke="#52525b" stroke-width="0.5657237936772047" fill-opacity="0.3" stroke-dasharray="2.262895174708819 1.1314475873544094" />
+  <circle cx="92.44592346089847" cy="500.37437603993345" r="1.1314475873544094" fill="#52525b" />
+  <line x1="79.99999999999997" y1="542.8036605657238" x2="420" y2="542.8036605657238" stroke="#78716c" stroke-width="1" />
+  <line x1="79.99999999999997" y1="537.8036605657238" x2="79.99999999999997" y2="547.8036605657238" stroke="#78716c" stroke-width="1" />
+  <line x1="420" y1="537.8036605657238" x2="420" y2="547.8036605657238" stroke="#78716c" stroke-width="1" />
+  <text font-family="Liberation Sans, Arial, sans-serif" font-size="12px" fill="#78716c" font-weight="600" x="250" y="557.8036605657238" text-anchor="middle">601mm</text>
+  <line x1="434.1430948419301" y1="528.6605657237938" x2="434.1430948419301" y2="121.3394342762063" stroke="#78716c" stroke-width="1" />
+  <line x1="429.1430948419301" y1="528.6605657237938" x2="439.1430948419301" y2="528.6605657237938" stroke="#78716c" stroke-width="1" />
+  <line x1="429.1430948419301" y1="121.3394342762063" x2="439.1430948419301" y2="121.3394342762063" stroke="#78716c" stroke-width="1" />
+  <text font-family="Liberation Sans, Arial, sans-serif" font-size="12px" fill="#78716c" font-weight="600" x="442.1430948419301" y="325" text-anchor="start" dominant-baseline="middle" transform="rotate(0, 442.1430948419301, 325)">720mm</text>
+  <text x="250" y="642" text-anchor="middle" fill="#999" font-family="Liberation Sans, Arial, sans-serif" font-size="10">601mm × 720mm | STANDARD 12MM</text>
+</svg>

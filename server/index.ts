@@ -84,6 +84,10 @@ export async function setupApp() {
     console.error("Migration import error:", err);
   }
 
+  // Authentication
+  const { setupAuth } = await import("./auth");
+  setupAuth(app);
+
   // Routes
   const httpServer = await registerRoutes(app);
 
